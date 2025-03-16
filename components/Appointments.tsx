@@ -1,4 +1,5 @@
 import React, { FormEvent, useState } from 'react';
+import { bookAppointment, rescheduleAppointment, cancelAppointment } from '../utils/api';
 
 interface Props {
   token: string | null;
@@ -10,8 +11,6 @@ export default function Appointments({ token }: Props) {
   const [time, setTime] = useState('');
   const [appointmentId, setAppointmentId] = useState('');
 
-  const baseUrl = 'http://127.0.0.1:5000'; // Adjust as needed
-
   const handleBook = async (e: FormEvent) => {
     e.preventDefault();
     if (!token || !providerId || !date || !time) {
@@ -19,22 +18,11 @@ export default function Appointments({ token }: Props) {
       return;
     }
     try {
-      const response = await fetch(`${baseUrl}/book`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': token
-        },
-        body: JSON.stringify({
-          provider_id: providerId,
-          date,
-          time
-        })
-      });
-      const data = await response.json();
+      const data = await bookAppointment(token, providerId, date, time);
       console.log('Book Appointment:', data);
     } catch (err) {
       console.error(err);
+      alert('Failed to book appointment. Please try again.');
     }
   };
 
@@ -45,22 +33,11 @@ export default function Appointments({ token }: Props) {
       return;
     }
     try {
-      const response = await fetch(`${baseUrl}/reschedule`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': token
-        },
-        body: JSON.stringify({
-          appointment_id: appointmentId,
-          new_date: date,
-          new_time: time
-        })
-      });
-      const data = await response.json();
+      const data = await rescheduleAppointment(token, appointmentId, date, time);
       console.log('Reschedule:', data);
     } catch (err) {
       console.error(err);
+      alert('Failed to reschedule appointment. Please try again.');
     }
   };
 
@@ -71,18 +48,11 @@ export default function Appointments({ token }: Props) {
       return;
     }
     try {
-      const response = await fetch(`${baseUrl}/cancel_appointment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': token
-        },
-        body: JSON.stringify({ appointment_id: appointmentId })
-      });
-      const data = await response.json();
+      const data = await cancelAppointment(token, appointmentId);
       console.log('Cancel Appointment:', data);
     } catch (err) {
       console.error(err);
+      alert('Failed to cancel appointment. Please try again.');
     }
   };
 
@@ -167,5 +137,4 @@ export default function Appointments({ token }: Props) {
       </form>
     </div>
   );
-  
 }

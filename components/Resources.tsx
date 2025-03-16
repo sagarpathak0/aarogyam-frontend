@@ -4,15 +4,16 @@ interface Props {
   token: string | null;
 }
 
+// Import baseUrl directly from our api file instead of trying to get it from context
+import { baseUrl } from '../utils/api';
+
 export default function Resources({ token }: Props) {
   const [resourceType, setResourceType] = useState('');
   const [resourceId, setResourceId] = useState('');
   const [recordData, setRecordData] = useState('');
   const [filterField, setFilterField] = useState('');
   const [filterValue, setFilterValue] = useState('');
-
-  const baseUrl = 'http://127.0.0.1:5000'; // Adjust as needed
-
+  
   const handleAdd = async (e: FormEvent) => {
     e.preventDefault();
     if (!token) {

@@ -7,13 +7,13 @@ interface Props {
 
 export default function Hospitals({ token }: Props) {
   const [name, setName] = useState('');
-  const [lat, setLat] = useState('');
-  const [lng, setLng] = useState('');
+  const [email, setemail] = useState('');
+  const [password, setpassword] = useState('');
 
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
     if (!token) return alert('Please sign in first.');
-    const data = await registerHospital(token, name, lat, lng);
+    const data = await registerHospital(token, name, email, password);
     console.log('Register Hospital:', data);
   };
 
@@ -36,16 +36,16 @@ export default function Hospitals({ token }: Props) {
         />
         <input
           type="text"
-          placeholder="Latitude"
-          value={lat}
-          onChange={(e) => setLat(e.target.value)}
-          className="w-full px-4 text-gray-800  py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-400"
+          placeholder="Name"
+          value={email}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full px-4 text-gray-800 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-400"
         />
         <input
           type="text"
-          placeholder="Longitude"
-          value={lng}
-          onChange={(e) => setLng(e.target.value)}
+          placeholder="Name"
+          value={password}
+          onChange={(e) => setName(e.target.value)}
           className="w-full px-4 text-gray-800 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-400"
         />
         <button

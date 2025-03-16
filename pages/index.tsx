@@ -1,12 +1,9 @@
-import React, { JSX, useState } from 'react';
+import React, { JSX, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { Geist, Geist_Mono } from 'next/font/google';
-// import Auth from '../components/Auth';
-import Hospitals from '../components/Hospitals';
-import HealthRecords from '../components/HealthRecords';
-import Resources from '../components/Resources';
-import Appointments from '../components/Appointments';
 import Navbar from '../components/Navbar';
+import { useAuth } from '../contexts/AuthContext';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,7 +16,19 @@ const geistMono = Geist_Mono({
 });
 
 export default function HomePage(): JSX.Element {
-  const [token, setToken] = useState<string | null>(null);
+  const { isAuthenticated, user } = useAuth();
+  const router = useRouter();
+
+  // Redirect authenticated users to their appropriate dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (user?.role === 'admin') {
+        router.push('/admin/dashboard');
+      } else {
+        router.push('/dashboard');
+      }
+    }
+  }, [isAuthenticated, user, router]);
 
   return (
     <div
@@ -29,24 +38,57 @@ export default function HomePage(): JSX.Element {
       <Navbar />
   
       <main className="flex flex-col pt-16 items-center w-full max-w-4xl gap-8">
-        {/* Sign Up & Sign In (Auth) */}
-        {/* <Auth token={token} setToken={setToken} /> */}
+        {/* Landing page content for non-authenticated users */}
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-black mb-4">Welcome to MyHealthApp</h1>
+          <p className="text-xl text-gray-600 mb-8">
+            Your comprehensive healthcare management solution
+          </p>
   
-        {/* Hospitals */}
-        <Hospitals token={token} />
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button 
+              onClick={() => router.push('/signup')}
+              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium text-lg hover:bg-blue-700 transition-colors cursor-pointer"
+            >
+              Get Started
+            </button>
   
-        {/* Health Records */}
-        <HealthRecords token={token} />
+            <button 
+              onClick={() => router.push('/signin')}
+              className="border border-gray-300 px-8 py-3 rounded-lg font-medium text-lg hover:bg-gray-100 transition-colors cursor-pointer"
+            >
+              Sign In
+            </button>
+          </div>
+        </div>
   
-        {/* Resources */}
-        <Resources token={token} />
+        {/* Feature highlights */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <h3 className="text-xl font-semibold mb-3">Find Hospitals</h3>
+            <p className="text-gray-600">
+              Easily locate and connect with healthcare providers near you
+            </p>
+          </div>
   
-        {/* Appointments */}
-        <Appointments token={token} />
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <h3 className="text-xl font-semibold mb-3">Manage Records</h3>
+            <p className="text-gray-600">
+              Access and maintain your health records securely
+            </p>
+          </div>
+  
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <h3 className="text-xl font-semibold mb-3">Book Appointments</h3>
+            <p className="text-gray-600">
+              Schedule and manage your medical appointments efficiently
+            </p>
+          </div>
+        </div>
       </main>
   
       <footer className="w-full border-t border-gray-200 py-4 text-center text-gray-600">
-        <p>&copy; 2021 MyHealthApp. All rights reserved.</p>
+        <p>&copy; 2025 MyHealthApp. All rights reserved.</p>
       </footer>
     </div>
   );
